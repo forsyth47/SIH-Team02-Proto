@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trip Capture</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" xintegrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            /* Dark Theme */
+            --bg-body: #1a202c;
+            --bg-card: #2d3748;
+            --bg-input: #4a5568;
+            --text-primary: #ffffff;
+            --text-secondary: #a0aec0;
+            --border-color: transparent;
+            --accent-blue: #4c51bf;
+            --map-filter: grayscale(100%);
+        }
+        body.light-mode {
+            /* Light Theme */
+            --bg-body: #f0f4f8;
+            --bg-card: #ffffff;
+            --bg-input: #e2e8f0;
+            --text-primary: #1f2937;
+            --text-secondary: #4b5563;
+            --border-color: #cbd5e0;
+            --accent-blue: #3b82f6;
+            --map-filter: none;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-primary);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .scroll-container {
+            -webkit-overflow-scrolling: touch;
+        }
+        .icon-container {
+            transition: all 0.2s ease-in-out;
+        }
+        .icon-container.selected {
+            background-color: var(--accent-blue);
+            color: var(--text-primary);
+            transform: scale(1.05);
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+        }
+        .icon-container.selected svg, .icon-container.selected i {
+            color: var(--text-primary);
+        }
+        .map-placeholder {
+            filter: var(--map-filter);
+        }
+        .custom-calendar-cell {
+            transition: all 0.2s ease;
+        }
+        .custom-calendar-cell:hover {
+            background-color: var(--bg-input);
+            cursor: pointer;
+        }
+        .card {
+            background-color: var(--bg-card);
+            color: var(--text-primary);
+        }
+        .text-secondary {
+            color: var(--text-secondary);
+        }
+        .input-field {
+            background-color: var(--bg-input);
+            color: var(--text-primary);
+        }
+        .accent-bg {
+            background-color: var(--accent-blue);
+        }
+        .accent-text {
+            color: var(--accent-blue);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+
+    <!-- Main Card Container -->
+    <div class="card rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden flex flex-col h-[90vh]">
+        
+        <!-- Header Section -->
+        <div class="p-6 text-center relative flex justify-center items-center">
+            <button class="absolute left-6 text-secondary hover:text-primary transition-colors">
+                <i class="fas fa-chevron-left text-xl"></i>
+            </button>
+            <h1 class="text-xl font-semibold">New Trip</h1>
+            <button id="theme-toggle" class="absolute right-6 text-secondary hover:text-primary transition-colors">
+                <!-- Sun/moon icon will be toggled by JavaScript -->
+                <i class="fas fa-sun text-xl hidden"></i>
+                <i class="fas fa-moon text-xl"></i>
+            </button>
+        </div>
+
+        <!-- Scrollable Content Area -->
+        <div class="flex-1 overflow-y-auto p-6 space-y-8 scroll-container">
+            
+            <!-- Map Placeholder -->
+            <section class="rounded-2xl overflow-hidden shadow-lg">
+                <img src="https://i.ibb.co/rGqMXqmf/Screen-Shot-2025-09-10-at-11-46-35-AM.png" alt="Dummy map placeholder" class="w-full h-auto map-placeholder">
+            </section>
+
+            <!-- Trip Details Section -->
+            <section class="space-y-6">
+                <!-- Trip Number -->
+                <div>
+                    <label class="block text-secondary text-sm mb-1">Trip Number</label>
+                    <div class="flex items-center space-x-2">
+                        <span class="text-3xl font-bold">17</span>
+                        <span class="text-secondary text-sm">(auto-generated)</span>
+                    </div>
+                </div>
+
+                <!-- Origin & Destination -->
+                <div class="space-y-4">
+                    <div>
+                        <label for="origin" class="block text-secondary text-sm mb-2">Origin Location</label>
+                        <div class="relative">
+                            <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-secondary"></i>
+                            <input type="text" id="origin" placeholder="Search" class="w-full pl-12 pr-4 py-3 input-field rounded-xl border border-transparent focus:border-[var(--accent-blue)] focus:ring-1 focus:ring-[var(--accent-blue)] outline-none transition-colors placeholder-secondary">
+                            <div class="absolute right-4 top-1/2 -translate-y-1/2 flex space-x-2">
+                                <button class="p-2 rounded-full accent-bg text-white hover:opacity-80 transition-opacity">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                </button>
+                                <button class="p-2 rounded-full accent-bg text-white hover:opacity-80 transition-opacity">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mode of Transport -->
+                <div>
+                    <label class="block text-secondary text-sm mb-2">Mode of Transport</label>
+                    <div class="flex flex-wrap gap-3" id="modeOfTransportContainer">
+                        <!-- Transport icons will be injected here -->
+                    </div>
+                </div>
+
+                <!-- Departure & Arrival -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="departure" class="block text-secondary text-sm mb-2">Departure Time & Date</label>
+                        <input type="datetime-local" id="departure" class="w-full px-4 py-3 input-field rounded-xl border border-transparent focus:border-[var(--accent-blue)] focus:ring-1 focus:ring-[var(--accent-blue)] outline-none transition-colors">
+                    </div>
+                    <div>
+                        <label for="arrival" class="block text-secondary text-sm mb-2">Arrival Time & Date</label>
+                        <input type="datetime-local" id="arrival" class="w-full px-4 py-3 input-field rounded-xl border border-transparent focus:border-[var(--accent-blue)] focus:ring-1 focus:ring-[var(--accent-blue)] outline-none transition-colors">
+                    </div>
+                </div>
+
+                <!-- Calendar Placeholder -->
+                <div class="p-4 input-field rounded-xl">
+                    <div class="flex justify-between items-center mb-4">
+                        <button class="text-secondary hover:text-primary"><i class="fas fa-chevron-left"></i></button>
+                        <span id="month-year" class="font-semibold"></span>
+                        <button class="text-secondary hover:text-primary"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                    <div class="grid grid-cols-7 text-center text-secondary text-sm font-medium mb-2">
+                        <span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span><span>Su</span>
+                    </div>
+                    <div class="grid grid-cols-7 text-center" id="calendar-grid">
+                        <!-- Calendar cells will be injected here -->
+                    </div>
+                </div>
+
+                <!-- Accompanying Travelers -->
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center">
+                        <h2 class="text-lg font-semibold">Accompanying Travelers</h2>
+                        <button id="addTravelerBtn" class="accent-bg text-white rounded-full p-2 hover:opacity-80 transition-opacity">
+                            <i class="fas fa-plus text-sm"></i>
+                        </button>
+                    </div>
+                    <div id="travelersContainer" class="space-y-3">
+                        <p class="text-secondary text-sm">No travelers added</p>
+                    </div>
+                </div>
+
+                <!-- Notes Section -->
+                <div>
+                    <label for="notes" class="block text-secondary text-sm mb-2">Notes</label>
+                    <textarea id="notes" rows="4" placeholder="Briefly describe the purpose of this trip..." class="w-full px-4 py-3 input-field rounded-xl border border-transparent focus:border-[var(--accent-blue)] focus:ring-1 focus:ring-[var(--accent-blue)] outline-none transition-colors placeholder-secondary"></textarea>
+                </div>
+            </section>
+        </div>
+
+        <!-- Footer Button -->
+        <div class="p-6">
+            <button id="saveTripBtn" class="w-full accent-bg text-white font-semibold py-3 rounded-xl shadow-lg hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-[var(--accent-blue)] transition-opacity transform hover:scale-105">
+                Save Trip
+            </button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const themeToggleBtn = document.getElementById('theme-toggle');
+            const body = document.body;
+            const sunIcon = document.querySelector('#theme-toggle .fa-sun');
+            const moonIcon = document.querySelector('#theme-toggle .fa-moon');
+            const travelersContainer = document.getElementById('travelersContainer');
+            const addTravelerBtn = document.getElementById('addTravelerBtn');
+            const modeOfTransportContainer = document.getElementById('modeOfTransportContainer');
+            const calendarGrid = document.getElementById('calendar-grid');
+            const monthYear = document.getElementById('month-year');
+            const today = new Date();
+
+            // Check for saved theme preference
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'light') {
+                body.classList.add('light-mode');
+                sunIcon.classList.remove('hidden');
+                moonIcon.classList.add('hidden');
+            } else {
+                sunIcon.classList.add('hidden');
+                moonIcon.classList.remove('hidden');
+            }
+
+            // Toggle theme on click
+            themeToggleBtn.addEventListener('click', () => {
+                body.classList.toggle('light-mode');
+                sunIcon.classList.toggle('hidden');
+                moonIcon.classList.toggle('hidden');
+                if (body.classList.contains('light-mode')) {
+                    localStorage.setItem('theme', 'light');
+                } else {
+                    localStorage.setItem('theme', 'dark');
+                }
+            });
+
+            const modes = [
+                { name: 'Plane', icon: `<i class="fa-solid fa-plane"></i>` },
+                { name: 'Car', icon: `<i class="fa-solid fa-car"></i>` },
+                { name: 'Train', icon: `<i class="fa-solid fa-train"></i>` },
+                { name: 'Bicycle', icon: `<i class="fa-solid fa-bicycle"></i>` },
+                { name: 'Walk', icon: `<i class="fa-solid fa-person-walking"></i>` },
+                { name: 'Other', icon: `<i class="fa-solid fa-ellipsis-h"></i>` }
+            ];
+
+            // Render Mode of Transport buttons
+            modes.forEach((mode, index) => {
+                const button = document.createElement('div');
+                button.className = 'flex flex-col items-center justify-center p-3 rounded-xl input-field text-secondary hover:opacity-80 transition-colors cursor-pointer icon-container';
+                if (index === 0) button.classList.add('selected');
+                button.innerHTML = `
+                    <div class="text-lg mb-1">${mode.icon}</div>
+                    <span class="text-xs font-medium">${mode.name}</span>
+                `;
+                button.addEventListener('click', () => {
+                    document.querySelectorAll('.icon-container').forEach(btn => btn.classList.remove('selected'));
+                    button.classList.add('selected');
+                });
+                modeOfTransportContainer.appendChild(button);
+            });
+
+            // Handle Add Traveler functionality
+            const addTraveler = () => {
+                if (travelersContainer.querySelector('p')) {
+                    travelersContainer.innerHTML = '';
+                }
+                const newTravelerDiv = document.createElement('div');
+                newTravelerDiv.className = 'flex items-center space-x-2 p-3 input-field rounded-xl';
+                newTravelerDiv.innerHTML = `
+                    <div class="flex-shrink-0 w-8 h-8 rounded-full input-field flex items-center justify-center text-secondary">
+                        <i class="fas fa-user text-sm"></i>
+                    </div>
+                    <div class="flex-1">
+                        <input type="text" placeholder="Traveler Name" class="w-full bg-transparent text-primary placeholder-secondary outline-none">
+                    </div>
+                    <button class="text-secondary hover:text-primary transition-colors remove-traveler-btn">
+                        <i class="fas fa-times text-sm"></i>
+                    </button>
+                `;
+                travelersContainer.appendChild(newTravelerDiv);
+                
+                newTravelerDiv.querySelector('.remove-traveler-btn').addEventListener('click', () => {
+                    newTravelerDiv.remove();
+                    if (travelersContainer.children.length === 0) {
+                         travelersContainer.innerHTML = '<p class="text-secondary text-sm">No travelers added</p>';
+                    }
+                });
+            };
+            addTravelerBtn.addEventListener('click', addTraveler);
+
+            // Generate simple calendar for demonstration
+            const renderCalendar = (date) => {
+                calendarGrid.innerHTML = '';
+                monthYear.textContent = date.toLocaleString('default', { month: 'long', year: 'numeric' });
+                const firstDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
+                const lastDayOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+                const startDay = firstDayOfMonth.getDay(); // 0 is Sunday, 1 is Monday
+
+                // Adjust for week starting on Monday (0-indexed for JS, so Mon is 1)
+                const firstDayAdjusted = startDay === 0 ? 6 : startDay - 1;
+
+                // Create empty cells for padding
+                for (let i = 0; i < firstDayAdjusted; i++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'p-2';
+                    calendarGrid.appendChild(cell);
+                }
+
+                // Create day cells
+                for (let i = 1; i <= lastDayOfMonth.getDate(); i++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'p-2 text-sm rounded-lg custom-calendar-cell';
+                    cell.textContent = i;
+                    if (i === today.getDate() && date.getMonth() === today.getMonth() && date.getFullYear() === today.getFullYear()) {
+                        cell.classList.add('accent-bg', 'text-white', 'font-bold');
+                    }
+                    calendarGrid.appendChild(cell);
+                }
+            };
+
+            renderCalendar(today);
+        });
+    </script>
+</body>
+</html>
