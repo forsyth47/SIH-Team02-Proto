@@ -88,7 +88,7 @@ export default function LocationSearch({
     setShowSuggestions(false)
     setSuggestions([])
     setHasFocus(false)
-    
+
     // Remove focus from input after selection
     if (inputRef.current) {
       inputRef.current.blur()

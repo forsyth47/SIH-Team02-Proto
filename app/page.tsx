@@ -118,7 +118,7 @@ export default function Home() {
       const response = await fetch('/api/trips')
       if (response.ok) {
         const tripsData = await response.json()
-        setTrips(tripsData.sort((a: TripData, b: TripData) => 
+        setTrips(tripsData.sort((a: TripData, b: TripData) =>
           new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         ))
       } else {
@@ -207,7 +207,7 @@ export default function Home() {
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
       <div className="card rounded-3xl shadow-2xl w-full max-w-md overflow-hidden flex flex-col h-[90vh]">
-        
+
         {/* Header */}
         <div className="p-6 text-center relative flex justify-center items-center border-b border-secondary/10">
           <h1 className="text-xl font-semibold">My Trips</h1>
@@ -257,7 +257,7 @@ export default function Home() {
                           <p className="text-xs text-secondary">{formatDate(trip.createdAt)}</p>
                         </div>
                       </div>
-                      
+
                       <div className="space-y-1">
                         <p className="text-sm font-medium">{trip.origin || 'No origin set'}</p>
                         {trip.destination && (
@@ -277,7 +277,7 @@ export default function Home() {
                         )}
                       </div>
                     </div>
-                    
+
                     <button
                       onClick={(e) => {
                         e.stopPropagation()

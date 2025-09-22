@@ -16,7 +16,7 @@ L.Icon.Default.mergeOptions({
 const openInExternalMap = (lat: number, lng: number) => {
   const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
   const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
-  
+
   if (isMobile) {
     if (isIOS) {
       // iOS - opens in Apple Maps
@@ -145,22 +145,22 @@ export default function MapComponent({
         className="w-full h-full"
         style={{ minHeight: '200px' }}
       />
-      
+
       {/* External Maps Button */}
       <button
         onClick={() => openInExternalMap(currentLocation[0], currentLocation[1])}
         className="absolute top-3 right-3 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors rounded-lg p-2 shadow-lg border border-gray-200 dark:border-gray-600 z-[1000]"
         title="Open in external maps"
       >
-        <svg 
-          className="w-5 h-5" 
-          fill="currentColor" 
+        <svg
+          className="w-5 h-5"
+          fill="currentColor"
           viewBox="0 0 20 20"
         >
-          <path 
-            fillRule="evenodd" 
-            d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" 
-            clipRule="evenodd" 
+          <path
+            fillRule="evenodd"
+            d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
+            clipRule="evenodd"
           />
         </svg>
       </button>

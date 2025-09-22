@@ -316,7 +316,7 @@ export default function NewTrip() {
 
         {/* Header */}
         <div className="p-6 text-center relative flex justify-center items-center">
-          <button 
+          <button
             onClick={() => router.push('/')}
             className="absolute left-6 text-secondary hover:text-primary transition-colors"
           >

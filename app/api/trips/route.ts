@@ -62,7 +62,7 @@ export async function GET() {
 
     const data: JsonSiloResponse = await response.json()
     console.log('JsonSilo API response:', data) // Debug log
-    
+
     // Handle both response formats - direct trips array or wrapped in file_data
     let trips: TripData[] = []
     if (data.file_data?.trips) {
@@ -72,7 +72,7 @@ export async function GET() {
     } else {
       trips = []
     }
-    
+
     console.log('Processed trips:', trips.length) // Debug log
     return NextResponse.json(trips)
   } catch (error) {
@@ -113,7 +113,7 @@ export async function POST(request: NextRequest) {
       try {
         const responseData = await getResponse.json()
         console.log('GET response data:', responseData) // Debug log
-        
+
         // Handle both response formats
         if (responseData.file_data?.trips) {
           existingData.file_data.trips = responseData.file_data.trips
@@ -130,10 +130,15 @@ export async function POST(request: NextRequest) {
     // Add new trip
     existingData.file_data.trips.push(tripData)
 
-    // For JsonSilo, we need to send just the trips array, not the wrapper
+    // For JsonSilo, send as object with trips array (matching current structure)
     const dataToSend = {
-      trips: existingData.file_data.trips
+      file_name: 'trips_data',
+      file_data: { trips: existingData.file_data.trips },
+      region_name: 'api',
+      is_public: false
     }
+
+    console.log('Sending PATCH data:', JSON.stringify(dataToSend, null, 2)) // Debug log
 
     // Save updated data using PATCH method
     const patchResponse = await fetch(JSONSILO_API_URL, {
@@ -184,7 +189,7 @@ export async function PUT(request: NextRequest) {
     }
 
     const responseData = await getResponse.json()
-    
+
     // Handle both response formats
     let trips: TripData[] = []
     if (responseData.file_data?.trips) {
@@ -202,14 +207,19 @@ export async function PUT(request: NextRequest) {
 
     trips[tripIndex] = updatedTrip
 
-    // Save updated data
+    // Save updated data with JsonSilo structure (object with trips array)
     const patchResponse = await fetch(JSONSILO_API_URL, {
       method: 'PATCH',
       headers: {
         'X-MAN-API': JSONSILO_API_KEY,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ trips }),
+      body: JSON.stringify({
+        file_name: 'trips_data',
+        file_data: { trips },
+        region_name: 'api',
+        is_public: false
+      }),
     })
 
     if (!patchResponse.ok) {
@@ -254,7 +264,7 @@ export async function DELETE(request: NextRequest) {
     }
 
     const responseData = await getResponse.json()
-    
+
     // Handle both response formats
     let trips: TripData[] = []
     if (responseData.file_data?.trips) {
@@ -271,14 +281,19 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: 'Trip not found' }, { status: 404 })
     }
 
-    // Save updated data
+    // Save updated data with JsonSilo structure (object with trips array)
     const patchResponse = await fetch(JSONSILO_API_URL, {
       method: 'PATCH',
       headers: {
         'X-MAN-API': JSONSILO_API_KEY,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ trips }),
+      body: JSON.stringify({
+        file_name: 'trips_data',
+        file_data: { trips },
+        region_name: 'api',
+        is_public: false
+      }),
     })
 
     if (!patchResponse.ok) {

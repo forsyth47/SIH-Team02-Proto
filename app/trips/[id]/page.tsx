@@ -177,10 +177,10 @@ export default function TripDetail() {
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
       <div className="card rounded-3xl shadow-2xl w-full max-w-md overflow-hidden flex flex-col h-[90vh]">
-        
+
         {/* Header */}
         <div className="p-6 text-center relative flex justify-center items-center border-b border-secondary/10">
-          <button 
+          <button
             onClick={() => router.push('/')}
             className="absolute left-6 text-secondary hover:text-primary transition-colors"
           >
